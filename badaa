@@ -1,8 +1,9 @@
-
-
-
-
-
+suresh anna 
+give me
+1 red
+amd 
+1 chai
+mutthu anna is coming
 PySpark program to create a DataFrame containing student details.
 sc = SparkContext()
 sql = SQLContext(sc)
