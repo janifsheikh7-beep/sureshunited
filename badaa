@@ -1,0 +1,94 @@
+PySpark program to create a DataFrame containing student details.
+sc = SparkContext()
+sql = SQLContext(sc)
+data = [
+(1, "AIML", 69),
+(2, "CS", 72),
+(3, "ECE", 99)
+]
+columns = ["No", "Dept", "No_of_students"]
+df = sql.createDataFrame(data, columns)
+df.show()
+df.rdd.saveAsTextFile("/user/cloudera/output_students")
+sc.stop()
+hdfs dfs -ls /user/cloudera/output_students
+hdfs dfs -cat /user/cloudera/output_students/part-00000
+
+An online shopping company wants to analyze its product information using Apache Pig.
+Start hdfs, yarn , hue
+pig –x local;
+products = LOAD 'products.txt’ USING PigStorage(',’)
+
+AS (product:chararray, category:chararray, sales:int);
+DUMP products;
+grouped = GROUP products BY category;
+result = FOREACH grouped GENERATE group, COUNT(products);
+DUMP result;
+electronics = FILTER products BY category == 'Electronics';
+DUMP electronics;
+
+Hadoop Implementation of file management tasks, such as Adding files and directories, retrieving files and Deleting files.
+hdfs dfs -mkdir lab4
+hdfs dfs -ls /user/cloudera/lab4
+hdfs dfs -put /home/cloudera/titanic.txt /user/cloudera/lab4
+hdfs dfs –ls /user/cloudera/lab4
+hdfs dfs -cat /user/cloudera/lab4/titanic.txt
+hdfs dfs -rm -r /user/cloudera/lab4
+
+A supermarket wants to understand its sales performance
+
+from pyspark import SparkContext
+from pyspark.sql import SQLContext
+
+sc = SparkContext()
+sql = SQLContext(sc)
+
+data = [
+("Laptop", "Electronics", 50000),
+("Phone", "Electronics", 30000),
+("Rice", "Grocery", 5000),
+("Oil", "Grocery", 2000),
+("Chair", "Furniture", 4000),
+("Table", "Furniture", 8000)
+]
+columns = ["Product", "Category", "Sales"]
+df = sql.createDataFrame(data, columns)
+
+print("All Products:")
+df.show()
+
+print("Products with sales above 5000:")
+df.filter(df.Sales > 5000).show()
+
+print("Total Sales by Category:")
+df.groupBy("Category").sum("Sales").show()
+
+print("Highest-Selling Product:")
+df.agg({"Sales": "max"}).show()
+
+print("Products sorted by Sales:")
+df.orderBy(df.Sales.desc()).show()
+
+sc.stop()
+spark-submit retail.py
+
+Convert Spark RDD to Data Frame and Dataset
+
+from pyspark import SparkContext
+from pyspark.sql import SQLContext
+
+sc = SparkContext()
+sql = SQLContext(sc)
+
+rdd = sc.parallelize([
+(1, "AIML", 69),
+(2, "CS", 72),
+(3, "ECE", 99)
+])
+
+df = sql.createDataFrame(rdd, ["No", "Dept", "No_of_students"])
+
+df.show()
+sc.stop()
+
+spark-submit rdd.py
